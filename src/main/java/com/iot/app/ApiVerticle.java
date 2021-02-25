@@ -5,6 +5,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.iot.helpers.RequestHelper;
 import com.iot.helpers.ResponseHelper;
 import com.iot.services.MusicService;
 
@@ -36,6 +37,7 @@ public class ApiVerticle extends AbstractVerticle {
 		route.handler(this::addMusic);
 
 		router.route(HttpMethod.GET, "/api/v1/music").handler(this::listMusics);
+		router.route(HttpMethod.POST, "/api/v1/music/:id").handler(this::addMusicToArduino);
 
 		vertx.createHttpServer().requestHandler(router).listen(8080);
 		LOGGER.info("The application is listening on 8080 port");
@@ -68,5 +70,12 @@ public class ApiVerticle extends AbstractVerticle {
 	public void listMusics(final RoutingContext context) {
 		logRequest(context);
 		musicService.listMusics(context);
+	}
+
+	public void addMusicToArduino(final RoutingContext context) {
+		final String filename = context.request().getParam("id");
+		RequestHelper.addMusicToArduino(filename);
+		context.response().setStatusCode(200).putHeader("content-type", "application/json")
+				.end(Json.encodePrettily(ResponseHelper.buildSuccess(200, new JsonObject())));
 	}
 }
