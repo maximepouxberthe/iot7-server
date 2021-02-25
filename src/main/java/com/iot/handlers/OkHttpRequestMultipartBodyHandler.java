@@ -28,7 +28,7 @@ public class OkHttpRequestMultipartBodyHandler extends OkHttpRequestBodyHandler 
 		}
 		for (final Triplet<String, String, File> file : files) {
 			builder.addFormDataPart(file.getValue0(), file.getValue1(),
-					RequestBody.create(MediaType.parse("image/png"), file.getValue2()));
+					RequestBody.create(MediaType.parse("audio/mpeg"), file.getValue2()));
 		}
 		return builder.build();
 	}
